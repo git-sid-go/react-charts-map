@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import "./App.css";
+import BarGraph from "./components/BarGraph";
 import StatesMap from "./components/StatesMap";
 import { GRAPH_COLORS } from "./constants/GRAPH_COLORS";
 import { ALL_STATE_CODES } from "./constants/STATES";
+import { GRAPH_DATA } from "./constants/GRAPH_DATA";
 
 function App() {
   const [statesColorConfig, setStatesColorConfig] = useState({});
+  const [graphData, setGraphData] = useState(GRAPH_DATA);
 
   const randomizeData = () => {
+    // Randomize colors
     const RANDOM_COLOR_CONFIG = {};
 
     ALL_STATE_CODES.forEach((state) => {
@@ -19,6 +23,23 @@ function App() {
     });
 
     setStatesColorConfig(RANDOM_COLOR_CONFIG);
+
+    // Randomize graph
+    const currentGraphData = [...graphData];
+
+    const newGraphData = currentGraphData.map((metric) => {
+      const randomMetric = {};
+      Object.keys(metric).forEach((property) => {
+        if (property !== "name") {
+          randomMetric[property] = Math.floor(Math.random() * 10000);
+        }
+      });
+      randomMetric.name = metric.name;
+
+      return randomMetric;
+    });
+
+    setGraphData(newGraphData);
   };
 
   return (
@@ -31,6 +52,7 @@ function App() {
           <StatesMap {...{ statesColorConfig }} />
         </div>
       </div>
+      <BarGraph data={graphData} />
     </div>
   );
 }
